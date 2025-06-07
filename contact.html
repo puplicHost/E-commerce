@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تواصل معنا</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      .contact-container {
+        max-width: 400px;
+        margin: 2.5rem auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(79,140,255,0.13);
+        padding: 2.5rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: popIn 0.8s;
+      }
+      .contact-container h2 {
+        color: #235390;
+        margin-bottom: 1.5rem;
+      }
+      .contact-container input, .contact-container textarea {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        margin-bottom: 1.2rem;
+        border: 1px solid #bfc9d9;
+        border-radius: 25px;
+        font-size: 1rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .contact-container input:focus, .contact-container textarea:focus {
+        border: 1.5px solid #4f8cff;
+      }
+      .contact-container button {
+        width: 100%;
+        padding: 0.8rem;
+        background: linear-gradient(90deg, #4f8cff 0%, #235390 100%);
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .contact-container button:hover {
+        background: linear-gradient(90deg, #235390 0%, #4f8cff 100%);
+      }
+      .contact-container .error {
+        color: #ff3b3b;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        text-align: center;
+      }
+      .contact-container .success {
+        color: #4caf50;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        text-align: center;
+      }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            <span>متجر عصري</span>
+        </div>
+        <nav>
+            <a href="index.html">الرئيسية</a>
+            <a href="contact.html">تواصل معنا</a>
+        </nav>
+    </header>
+    <div class="contact-container">
+        <h2><i class="fas fa-envelope"></i> تواصل معنا</h2>
+        <div class="error" id="contactError"></div>
+        <div class="success" id="contactSuccess"></div>
+        <input type="text" id="contactName" placeholder="الاسم" required>
+        <input type="email" id="contactEmail" placeholder="البريد الإلكتروني" required>
+        <textarea id="contactMsg" placeholder="رسالتك" rows="4" required></textarea>
+        <button onclick="sendContact()">إرسال</button>
+    </div>
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2024 متجر عصري</p>
+    </footer>
+    <script>
+      // إرسال الرسالة عبر EmailJS (خدمة مجانية لإرسال البريد من الواجهة)
+      function sendContact() {
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const msg = document.getElementById('contactMsg').value.trim();
+        const errorDiv = document.getElementById('contactError');
+        const successDiv = document.getElementById('contactSuccess');
+        errorDiv.textContent = '';
+        successDiv.textContent = '';
+        if (!name || !email || !msg) {
+          errorDiv.textContent = 'يرجى تعبئة جميع الحقول.';
+          return;
+        }
+        // EmailJS integration
+        emailjs.send("service_4w7k1kq", "template_2v6v1q8", {
+          from_name: name,
+          from_email: email,
+          message: msg,
+          to_email: "dodahassan0045@gmail.com"
+        }).then(function(response) {
+          successDiv.textContent = 'تم إرسال رسالتك بنجاح!';
+        }, function(error) {
+          errorDiv.textContent = 'حدث خطأ أثناء الإرسال. حاول مرة أخرى.';
+        });
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+    <script>
+      (function(){
+        emailjs.init("user_4w7k1kqQw7k1kqQw7k1kq");
+      })();
+    </script>
+</body>
+</html>

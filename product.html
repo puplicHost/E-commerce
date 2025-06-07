@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyByopxTvGDJI4HKwqFGXdr6_vIpEW9LqtY",
+        authDomain: "e-commerce-78ad4.firebaseapp.com",
+        projectId: "e-commerce-78ad4",
+        storageBucket: "e-commerce-78ad4.appspot.com",
+        messagingSenderId: "820613050732",
+        appId: "1:820613050732:web:c23b68403b8ea9a7dfc349",
+        measurementId: "G-LJYTC2JQTX"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <style>
+      .product-details-container {
+        max-width: 700px;
+        margin: 2.5rem auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(79,140,255,0.13);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        animation: popIn 0.8s;
+      }
+      .product-details-image {
+        width: 100%;
+        max-height: 350px;
+        object-fit: cover;
+        border-radius: 14px;
+        background: #e9eef6;
+      }
+      .product-details-title {
+        font-size: 2rem;
+        color: #235390;
+        font-weight: bold;
+        margin: 0;
+      }
+      .product-details-type {
+        color: #4f8cff;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+      .product-details-desc {
+        font-size: 1.1rem;
+        color: #444;
+        margin-bottom: 0.7rem;
+      }
+      .product-details-price {
+        font-size: 1.3rem;
+        color: #ff9800;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+      .back-btn {
+        background: #4f8cff;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        padding: 0.7rem 1.5rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 1rem;
+      }
+      .back-btn:hover {
+        background: #235390;
+      }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            <span>متجر عصري</span>
+        </div>
+        <nav>
+            <a href="index.html">الرئيسية</a>
+            <a href="contact.html">تواصل معنا</a>
+        </nav>
+    </header>
+    <div class="product-details-container" id="productDetails">
+        <!-- تفاصيل المنتج ستظهر هنا -->
+    </div>
+    <div style="text-align:center">
+      <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button>
+    </div>
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2024 متجر عصري</p>
+    </footer>
+    <script>
+      // جلب تفاصيل المنتج من Firestore حسب ID في الرابط
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+      const productId = getQueryParam('id');
+      const db = firebase.firestore();
+      const detailsDiv = document.getElementById('productDetails');
+      if (productId) {
+        db.collection('products').doc(productId).get().then(doc => {
+          if (doc.exists) {
+            const p = doc.data();
+            detailsDiv.innerHTML = `
+              <img src="${p.image}" class="product-details-image" alt="صورة المنتج">
+              <h1 class="product-details-title">${p.name}</h1>
+              <div class="product-details-type">${p.type}</div>
+              <div class="product-details-desc">${p.desc}</div>
+              <div class="product-details-price">${p.price} ج.م</div>
+            `;
+          } else {
+            detailsDiv.innerHTML = '<p>المنتج غير موجود.</p>';
+          }
+        });
+      } else {
+        detailsDiv.innerHTML = '<p>لم يتم تحديد منتج.</p>';
+      }
+    </script>
+</body>
+</html>

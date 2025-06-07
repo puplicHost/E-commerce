@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر إلكتروني عصري</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyByopxTvGDJI4HKwqFGXdr6_vIpEW9LqtY",
+        authDomain: "e-commerce-78ad4.firebaseapp.com",
+        projectId: "e-commerce-78ad4",
+        storageBucket: "e-commerce-78ad4.appspot.com",
+        messagingSenderId: "820613050732",
+        appId: "1:820613050732:web:c23b68403b8ea9a7dfc349",
+        measurementId: "G-LJYTC2JQTX"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            <span>متجر عصري</span>
+        </div>
+        <nav>
+            <a href="index.html">الرئيسية</a>
+            <a href="contact.html">تواصل معنا</a>
+            <a href="login.html"><i class="fas fa-user-lock"></i> دخول الإدارة</a>
+        </nav>
+    </header>
+    <section class="search-filter-bar">
+        <input type="text" id="searchInput" placeholder="ابحث عن منتج...">
+        <select id="sortSelect">
+            <option value="default">ترتيب حسب</option>
+            <option value="price">السعر</option>
+            <option value="type">النوع</option>
+        </select>
+    </section>
+    <main>
+        <div id="productsContainer" class="products-grid">
+            <!-- المنتجات ستظهر هنا -->
+        </div>
+    </main>
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2024 متجر عصري</p>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>

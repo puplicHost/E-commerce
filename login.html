@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الإدارة</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyByopxTvGDJI4HKwqFGXdr6_vIpEW9LqtY",
+        authDomain: "e-commerce-78ad4.firebaseapp.com",
+        projectId: "e-commerce-78ad4",
+        storageBucket: "e-commerce-78ad4.appspot.com",
+        messagingSenderId: "820613050732",
+        appId: "1:820613050732:web:c23b68403b8ea9a7dfc349",
+        measurementId: "G-LJYTC2JQTX"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <style>
+      .login-container {
+        max-width: 350px;
+        margin: 60px auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(79,140,255,0.13);
+        padding: 2.5rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: popIn 0.8s;
+      }
+      .login-container h2 {
+        color: #235390;
+        margin-bottom: 1.5rem;
+      }
+      .login-container input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        margin-bottom: 1.2rem;
+        border: 1px solid #bfc9d9;
+        border-radius: 25px;
+        font-size: 1rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .login-container input:focus {
+        border: 1.5px solid #4f8cff;
+      }
+      .login-container button {
+        width: 100%;
+        padding: 0.8rem;
+        background: linear-gradient(90deg, #4f8cff 0%, #235390 100%);
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .login-container button:hover {
+        background: linear-gradient(90deg, #235390 0%, #4f8cff 100%);
+      }
+      .login-container .error {
+        color: #ff3b3b;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        text-align: center;
+      }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2><i class="fas fa-user-lock"></i> دخول الإدارة</h2>
+        <div class="error" id="errorMsg"></div>
+        <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+        <input type="password" id="password" placeholder="كلمة المرور" required>
+        <button onclick="loginAdmin()">تسجيل الدخول</button>
+    </div>
+    <script>
+      function loginAdmin() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = '';
+        firebase.auth().signInWithEmailAndPassword(email, password)
+          .then(() => {
+            window.location.href = 'admin.html';
+          })
+          .catch(error => {
+            errorMsg.textContent = 'بيانات الدخول غير صحيحة أو هناك مشكلة.';
+          });
+      }
+    </script>
+</body>
+</html>

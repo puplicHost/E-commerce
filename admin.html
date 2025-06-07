@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المتجر</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyByopxTvGDJI4HKwqFGXdr6_vIpEW9LqtY",
+        authDomain: "e-commerce-78ad4.firebaseapp.com",
+        projectId: "e-commerce-78ad4",
+        storageBucket: "e-commerce-78ad4.appspot.com",
+        messagingSenderId: "820613050732",
+        appId: "1:820613050732:web:c23b68403b8ea9a7dfc349",
+        measurementId: "G-LJYTC2JQTX"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <style>
+      .admin-header {
+        background: #235390;
+        color: #fff;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 0 0 18px 18px;
+        margin-bottom: 2rem;
+      }
+      .admin-header .logout-btn {
+        background: #ff3b3b;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        padding: 0.5rem 1.2rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .admin-header .logout-btn:hover {
+        background: #c62828;
+      }
+      .admin-form {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(79,140,255,0.13);
+        padding: 2rem;
+        max-width: 500px;
+        margin: 0 auto 2rem auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        animation: popIn 0.8s;
+      }
+      .admin-form input, .admin-form textarea, .admin-form select {
+        padding: 0.7rem 1rem;
+        border: 1px solid #bfc9d9;
+        border-radius: 25px;
+        font-size: 1rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .admin-form input:focus, .admin-form textarea:focus, .admin-form select:focus {
+        border: 1.5px solid #4f8cff;
+      }
+      .admin-form button {
+        background: linear-gradient(90deg, #4f8cff 0%, #235390 100%);
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .admin-form button:hover {
+        background: linear-gradient(90deg, #235390 0%, #4f8cff 100%);
+      }
+      .products-table {
+        width: 95%;
+        margin: 0 auto 2rem auto;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(79,140,255,0.09);
+        overflow: hidden;
+        animation: fadeIn 1.2s;
+      }
+      .products-table th, .products-table td {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid #e9eef6;
+      }
+      .products-table th {
+        background: #e9eef6;
+        color: #235390;
+      }
+      .products-table tr:last-child td {
+        border-bottom: none;
+      }
+      .action-btn {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin: 0 0.3rem;
+        transition: color 0.2s;
+      }
+      .action-btn.edit { color: #4f8cff; }
+      .action-btn.delete { color: #ff3b3b; }
+      .action-btn.edit:hover { color: #235390; }
+      .action-btn.delete:hover { color: #c62828; }
+      .admin-form .error, .admin-form .success {
+        text-align: center;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .admin-form .error { color: #ff3b3b; }
+      .admin-form .success { color: #4caf50; }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <span><i class="fas fa-cogs"></i> لوحة تحكم المتجر</span>
+        <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+    </div>
+    <form class="admin-form" id="productForm">
+        <div class="error" id="formError"></div>
+        <div class="success" id="formSuccess"></div>
+        <input type="text" id="productName" placeholder="اسم المنتج" required>
+        <textarea id="productDesc" placeholder="وصف المنتج" rows="2" required></textarea>
+        <input type="text" id="productType" placeholder="نوع المنتج" required>
+        <input type="url" id="productImage" placeholder="رابط صورة المنتج" required>
+        <input type="number" id="productPrice" placeholder="سعر المنتج" min="0" required>
+        <button type="submit">إضافة / تحديث المنتج</button>
+        <input type="hidden" id="productId">
+    </form>
+    <table class="products-table">
+        <thead>
+            <tr>
+                <th>الصورة</th>
+                <th>الاسم</th>
+                <th>الوصف</th>
+                <th>النوع</th>
+                <th>السعر</th>
+                <th>إجراءات</th>
+            </tr>
+        </thead>
+        <tbody id="productsTableBody">
+            <!-- المنتجات ستظهر هنا -->
+        </tbody>
+    </table>
+    <script>
+      // حماية الصفحة
+      firebase.auth().onAuthStateChanged(user => {
+        if (!user) window.location.href = 'login.html';
+      });
+      function logout() {
+        firebase.auth().signOut().then(() => window.location.href = 'login.html');
+      }
+      // Firestore
+      const db = firebase.firestore();
+      const form = document.getElementById('productForm');
+      const formError = document.getElementById('formError');
+      const formSuccess = document.getElementById('formSuccess');
+      const productsTableBody = document.getElementById('productsTableBody');
+      let editMode = false;
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        formError.textContent = '';
+        formSuccess.textContent = '';
+        const name = document.getElementById('productName').value.trim();
+        const desc = document.getElementById('productDesc').value.trim();
+        const type = document.getElementById('productType').value.trim();
+        const image = document.getElementById('productImage').value.trim();
+        const price = parseFloat(document.getElementById('productPrice').value);
+        const id = document.getElementById('productId').value;
+        if (!name || !desc || !type || !image || isNaN(price)) {
+          formError.textContent = 'يرجى تعبئة جميع الحقول بشكل صحيح.';
+          return;
+        }
+        try {
+          if (id) {
+            await db.collection('products').doc(id).update({ name, desc, type, image, price });
+            formSuccess.textContent = 'تم تحديث المنتج بنجاح!';
+          } else {
+            await db.collection('products').add({ name, desc, type, image, price });
+            formSuccess.textContent = 'تمت إضافة المنتج بنجاح!';
+          }
+          form.reset();
+          document.getElementById('productId').value = '';
+          editMode = false;
+        } catch (err) {
+          formError.textContent = 'حدث خطأ أثناء الحفظ.';
+        }
+      };
+      // عرض المنتجات
+      function renderProducts() {
+        db.collection('products').orderBy('name').onSnapshot(snapshot => {
+          productsTableBody.innerHTML = '';
+          snapshot.forEach(doc => {
+            const p = doc.data();
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><img src="${p.image}" alt="صورة" style="width:60px;height:60px;border-radius:12px;"></td>
+              <td>${p.name}</td>
+              <td>${p.desc}</td>
+              <td>${p.type}</td>
+              <td>${p.price} ج.م</td>
+              <td>
+                <button class="action-btn edit" title="تعديل" onclick="editProduct('${doc.id}', '${p.name}', '${p.desc}', '${p.type}', '${p.image}', ${p.price})"><i class="fas fa-edit"></i></button>
+                <button class="action-btn delete" title="حذف" onclick="deleteProduct('${doc.id}')"><i class="fas fa-trash"></i></button>
+              </td>
+            `;
+            productsTableBody.appendChild(tr);
+          });
+        });
+      }
+      renderProducts();
+      // تعديل منتج
+      window.editProduct = function(id, name, desc, type, image, price) {
+        document.getElementById('productId').value = id;
+        document.getElementById('productName').value = name;
+        document.getElementById('productDesc').value = desc;
+        document.getElementById('productType').value = type;
+        document.getElementById('productImage').value = image;
+        document.getElementById('productPrice').value = price;
+        formSuccess.textContent = '';
+        formError.textContent = '';
+        editMode = true;
+      };
+      // حذف منتج
+      window.deleteProduct = async function(id) {
+        if (confirm('هل أنت متأكد من حذف المنتج؟')) {
+          try {
+            await db.collection('products').doc(id).delete();
+          } catch (err) {
+            alert('حدث خطأ أثناء الحذف.');
+          }
+        }
+      };
+    </script>
+</body>
+</html>
